@@ -14,6 +14,8 @@ final class LoginViewModel: ObservableObject {
 
     @Published var message = ""
 
+    @Published var isPasswordVisible = false
+
     func validate(email: String, password: String) -> Bool {
         guard !email.isEmpty else {
             message = "Email is required"
@@ -32,5 +34,9 @@ final class LoginViewModel: ObservableObject {
 
         message = "Login successful"
         return true
+    }
+
+    func togglePasswordVisibility() {
+        isPasswordVisible.toggle()
     }
 }

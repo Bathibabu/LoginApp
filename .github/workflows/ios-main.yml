@@ -2,8 +2,7 @@ name: iOS main branch CI
 on:
     push:
         branches:
-            - main
-    
+            - main    
 jobs:
     build-and-test:
         runs-on: macos-26

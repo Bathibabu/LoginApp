@@ -65,4 +65,18 @@ final class LoginViewModelTests: XCTestCase {
         XCTAssertTrue(result)
         XCTAssertEqual(sut.message, "Login successful")
     }
+
+    func testPasswordIsHiddenByDefault() {
+        XCTAssertFalse(sut.isPasswordVisible)
+    }
+
+    func testTogglePasswordVisibility() {
+        sut.togglePasswordVisibility()
+
+        XCTAssertTrue(sut.isPasswordVisible)
+
+        sut.togglePasswordVisibility()
+
+        XCTAssertFalse(sut.isPasswordVisible)
+    }
 }
