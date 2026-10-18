@@ -19,6 +19,7 @@ struct LoginView: View {
         VStack(spacing: 16) {
             Text("Login")
                 .font(.largeTitle.bold())
+                .tint(.primary)
 
             TextField("Email", text: $email)
                 .textFieldStyle(.roundedBorder)
