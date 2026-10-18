@@ -19,14 +19,27 @@ struct LoginView: View {
         VStack(spacing: 16) {
             Text("Login")
                 .font(.largeTitle.bold())
+                .tint(.primary)
 
             TextField("Email", text: $email)
                 .textFieldStyle(.roundedBorder)
                 .keyboardType(.emailAddress)
                 .textInputAutocapitalization(.never)
 
-            SecureField("Password", text: $password)
-                .textFieldStyle(.roundedBorder)
+            Group {
+                if viewModel.isPasswordVisible {
+                    TextField("Password", text: $password)
+                } else {
+                    SecureField("Password", text: $password)
+                }
+            }
+            .textFieldStyle(.roundedBorder)
+
+            Button(
+                viewModel.isPasswordVisible ? "Hide Password" : "Show Password"
+            ) {
+                viewModel.togglePasswordVisibility()
+            }
 
             Button("Login") {
                 viewModel.validate(
