@@ -31,4 +31,22 @@ jobs:
                     -project LoginApp.xcodeproj \
                     -scheme LoginApp \
                     -destination 'platform=iOS Simulator,name=iPhone 17' \
-                    -enableCodeCoverage YES
+                    -enableCodeCoverage YES \
+                    -resultBundlePath LoginApp.xcresult
+            
+            - name: Code coverage report
+              if: always()
+              run: |
+                if [ -d "LoginApp.xcresult" ]; then
+                    xcrun xccov view --report LoginApp.xcresult
+                else
+                    echo "No test result bundle found"
+                fi
+            
+            - name: Save test results
+              if : always()
+              uses: actions/upload-artifact@v4
+              with:
+                name: ios-test-results
+                path: LoginApp.xcresult
+                if-no-files-found: warn
