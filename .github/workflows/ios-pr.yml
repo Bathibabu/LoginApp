@@ -54,7 +54,7 @@ jobs:
             - name: Enforce minimum code coverage (60%)
               if: success()
               run: |
-                xcrun view --json LoginApp.xcresult > coverage.json
+                xcrun xccov view --report --json LoginApp.xcresult > coverage.json
                 
                 python3 - <<"PY"
                 import json
