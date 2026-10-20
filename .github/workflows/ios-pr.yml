@@ -63,13 +63,13 @@ jobs:
                 with open("coverage.json") as file:
                     report = json.load(file)
                     
-                coverage = report.get("lineCOverage")
+                coverage = report.get("lineCoverage")
                 
                 if coverage is None:
                     print("::error::Could not read code coverage percentage")
                     sys.exit(1)
                     
-                percentage float(coverage) * 100
+                percentage = float(coverage) * 100
                 
                 print(f"Total code coverage: {percentage:.2f}%")
                 print("Minimum required coverage: 60.00%")
