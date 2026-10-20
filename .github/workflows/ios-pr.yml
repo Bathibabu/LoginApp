@@ -11,7 +11,7 @@ concurrency:
 jobs:
     build-and-test:
         runs-on: macos-26
-        timeout-minutes: 30
+        timeout-minutes: 60
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -30,4 +30,53 @@ jobs:
                 xcodebuild  test \
                     -project LoginApp.xcodeproj \
                     -scheme LoginApp \
-                    -destination 'platform=iOS Simulator,name=iPhone 17'
+                    -destination 'platform=iOS Simulator,name=iPhone 17' \
+                    -enableCodeCoverage YES \
+                    -resultBundlePath LoginApp.xcresult
+            
+            - name: Code coverage report
+              if: always()
+              run: |
+                if [ -d "LoginApp.xcresult" ]; then
+                    xcrun xccov view --report LoginApp.xcresult
+                else
+                    echo "No test result bundle found"
+                fi
+            
+            - name: Save test results
+              if : always()
+              uses: actions/upload-artifact@v4
+              with:
+                name: ios-test-results
+                path: LoginApp.xcresult
+                if-no-files-found: warn
+            
+            - name: Enforce minimum code coverage (60%)
+              if: success()
+              run: |
+                xcrun xccov view --report --json LoginApp.xcresult > coverage.json
+                
+                python3 - <<"PY"
+                import json
+                import sys
+                
+                with open("coverage.json") as file:
+                    report = json.load(file)
+                    
+                coverage = report.get("lineCoverage")
+                
+                if coverage is None:
+                    print("::error::Could not read code coverage percentage")
+                    sys.exit(1)
+                    
+                percentage = float(coverage) * 100
+                
+                print(f"Total code coverage: {percentage:.2f}%")
+                print("Minimum required coverage: 60.00%")
+                
+                if percentage < 60:
+                    print("::error::Code coverage is below 60%")
+                    sys.exit(1)
+                
+                print("Code coverage quality gate passed!")
+                PY
